@@ -1,0 +1,54 @@
+server:
+  port: 3068
+  servlet:
+    context-path: /
+    session:
+      timeout: 1d
+  tomcat:
+    uri-encoding: UTF-8
+    threads:
+      max: 800
+      min-spare: 30
+
+spring:
+  application:
+    name: also-admin
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles:
+    active: druid,extend
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+      location: temp
+
+mybatis-plus:
+  type-aliases-package: com.also.car.rental.entity,com.also.car.rental.model
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  global-config:
+    db-config:
+      id-type: auto
+  configuration:
+    jdbc-type-for-null: 'null'
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-handlers-package: com.also.framework.common.config.mybatis.typehandler
+
+logging:
+  level:
+    root: info
+
+also:
+  security:
+    ignore:
+      urls:
+        - "/auth/**"
+        - "/login.html"
+        - "/css/**"
+        - "/v2/api-docs"
+        - "/swagger-resources/**"
+        - "/webjars/**"
+        - "/swagger-ui.html"
+        - "/api/**"
+

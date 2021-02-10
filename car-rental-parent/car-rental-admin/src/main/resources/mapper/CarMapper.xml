@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.also.car.rental.mapper.CarMapper">
+
+    <select id="selectCarRentalViews" parameterType="com.also.car.rental.model.CarQueryReq" resultType="com.also.car.rental.model.CarRentalView">
+        select sc.brand_type,sc.rent_price,count(sc.id) stock from sys_car sc
+        where not exists
+        (select scrr.id from sys_car_rental_record scrr
+         where scrr.car_id=sc.id and (#{req.rentTime,jdbcType=TIMESTAMP} BETWEEN scrr.rent_time and scrr.return_time
+                    or #{req.returnTime,jdbcType=TIMESTAMP} BETWEEN scrr.rent_time and scrr.return_time))
+        <if test="req.brandType != null">
+            and sc.brand_type=#{req.brandType}
+        </if>
+        group by sc.brand_type,sc.rent_price
+    </select>
+
+    <select id="selectUnRentalCars" parameterType="com.also.car.rental.model.CarRentalReq" resultType="com.also.car.rental.entity.Car">
+        select sc.* from sys_car sc
+        where not exists
+        (select scrr.id from sys_car_rental_record scrr
+        where scrr.car_id=sc.id and (#{req.rentTime} BETWEEN scrr.rent_time and scrr.return_time
+        or #{req.returnTime} BETWEEN scrr.rent_time and scrr.return_time))
+            and sc.brand_type=#{req.brandType}
+    </select>
+
+</mapper>

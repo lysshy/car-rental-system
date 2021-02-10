@@ -13,6 +13,7 @@ public class CarRentalRecordView {
 
     private LocalDateTime rentTime;
 
+
     private LocalDateTime returnTime;
 
     private Integer brandType;
