@@ -7,6 +7,7 @@ import com.also.car.rental.exception.CustomException;
 import com.also.car.rental.mapper.CarRentalRecordMapper;
 import com.also.car.rental.model.CarRentalRecordQueryReq;
 import com.also.car.rental.service.impl.CarRentalRecordServiceImpl;
+import org.apache.tomcat.jni.Local;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -55,6 +58,8 @@ public class StaffManageReserveOrderTest {
         int carId = 1;
         CarRentalRecord carRentalRecord = new CarRentalRecord();
         carRentalRecord.setStatus(CarRentalRecordStatus.RESERVE.getCode());
+        LocalDateTime now = LocalDateTime.now();
+        carRentalRecord.setRentTime(now.minusDays(1));
         carRentalRecord.setCarId(carId);
         given(carRentalRecordMapper.selectById(recordId)).willReturn(carRentalRecord);
         carRentalRecordService.takeCar(recordId);
@@ -69,6 +74,20 @@ public class StaffManageReserveOrderTest {
         int carId = 1;
         CarRentalRecord carRentalRecord = new CarRentalRecord();
         carRentalRecord.setStatus(CarRentalRecordStatus.USING_CAR.getCode());
+        carRentalRecord.setCarId(carId);
+        given(carRentalRecordMapper.selectById(recordId)).willReturn(carRentalRecord);
+
+        Assert.assertThrows(CustomException.class, () -> carRentalRecordService.takeCar(recordId));
+    }
+
+    @Test
+    public void should_takeCarFail_when_takeCarBeforeTheRentTime() {
+        int recordId = 1;
+        int carId = 1;
+        CarRentalRecord carRentalRecord = new CarRentalRecord();
+        carRentalRecord.setStatus(CarRentalRecordStatus.RESERVE.getCode());
+        LocalDateTime now = LocalDateTime.now();
+        carRentalRecord.setRentTime(now.plusDays(1));
         carRentalRecord.setCarId(carId);
         given(carRentalRecordMapper.selectById(recordId)).willReturn(carRentalRecord);
 
