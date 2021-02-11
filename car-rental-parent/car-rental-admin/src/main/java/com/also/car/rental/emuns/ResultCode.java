@@ -18,7 +18,7 @@ public enum ResultCode {
     OPERATE_ERROR("405", "操作失败，请求操作的资源不存在"),
     TIME_OUT("408", "请求超时"),
 
-    SERVER_ERROR("500", "服务器内部错误"),
+    SERVER_ERROR("500", "Inner server error"),
 
 
     CAR_STOCK_NOT_EXIST("2000", "库存记录不存在"),
